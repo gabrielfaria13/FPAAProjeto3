@@ -146,7 +146,7 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-###Cobertura de Testes
+### Cobertura de Testes
 - Grafo simples não-direcionado
 - Grafo direcionado com solução
 - Grafo sem solução
@@ -155,11 +155,61 @@ if __name__ == '__main__':
 
 ---
 
-#  Análise Computacional do Problema do Caminho Hamiltoniano
+##  Visualização Gráfica 
+### Implementação em `view.py`
+```python
+import networkx as nx
+import matplotlib.pyplot as plt
+from main import encontrar_caminho_hamiltoniano
 
-##  Classificação de Complexidade
+def visualizar_grafo(grafo, direcionado=False):
+    G = nx.DiGraph() if direcionado else nx.Graph()
+    
+    # Adiciona nós e arestas
+    for vertice, vizinhos in grafo.items():
+        G.add_node(vertice)
+        for vizinho in vizinhos:
+            G.add_edge(vertice, vizinho)
+    
+    caminho = encontrar_caminho_hamiltoniano(grafo, direcionado)
+    pos = nx.spring_layout(G)
+    
+    # Desenha o grafo completo
+    nx.draw_networkx_nodes(G, pos, node_size=700, node_color='lightblue')
+    nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, edge_color='gray', width=1)
+    
+    # Destaca o caminho Hamiltoniano
+    if caminho:
+        edges_path = list(zip(caminho[:-1], caminho[1:]))
+        nx.draw_networkx_edges(G, pos, edgelist=edges_path, 
+                             edge_color='red', width=3)
+    
+    plt.axis('off')
+    plt.savefig('assets/grafo.png', dpi=300)
+    plt.show()
 
-### # Classes de Complexidade
+# Exemplo de uso
+if __name__ == '__main__':
+    grafo_exemplo = {
+        0: [1, 2],
+        1: [0, 3],
+        2: [0, 3],
+        3: [1, 2]
+    }
+    visualizar_grafo(grafo_exemplo)
+```
+
+##  Visualização
+Exemplo de saída do `view.py`:
+
+<img width="311" alt="image" src="https://github.com/user-attachments/assets/a62223a7-e26b-47a2-876e-41c90b9cc31b" />
+
+##  Análise Computacional do Problema do Caminho Hamiltoniano
+
+###  Classificação de Complexidade
+
+#### Classes de Complexidade
 - **NP**: 
   - Verificação em tempo polinomial (O(n))
   - Certificado: sequência de vértices
@@ -174,15 +224,15 @@ if __name__ == '__main__':
 
 ---
 
-##  Análise de Complexidade Temporal
+###  Análise de Complexidade Temporal
 
-### # Método de Análise
+#### Método de Análise
 **Recorrência do Backtracking**:
 ```math
 T(n) = (n-1) \cdot T(n-1) + O(1)
 ```
 
-### # Expansão Recursiva
+#### Expansão Recursiva
 1. **Caso Base**:
    - T(1) = 1
    - T(2) = 1
@@ -205,7 +255,7 @@ T(n) = (n-1) \cdot T(n-1) + O(1)
 
 ##  Teorema Mestre: Não Aplicável
 
-### # Razões Técnicas
+### Razões Técnicas
 1. **Formato Incompatível**:
    - Requer: `T(n) = a·T(n/b) + f(n)`
    - Temos: `T(n) = (n-1)·T(n-1) + O(1)`
@@ -222,7 +272,7 @@ T(n) = (n-1) \cdot T(n-1) + O(1)
 
 ##  Casos de Complexidade
 
-### # Pior Caso (O(n!))
+### Pior Caso (O(n!))
 - **Cenário**:
   - Grafo completo sem caminho
   - Explora todas n! permutações
@@ -231,7 +281,7 @@ T(n) = (n-1) \cdot T(n-1) + O(1)
   - n=15 → 1.3 trilhões de operações
   - n=20 → 2.4×10¹⁸ operações
 
-### # Caso Médio (Θ((n/e)ⁿ√n))
+###  Caso Médio (Θ((n/e)ⁿ√n))
 - **Aproximação de Stirling**:
   ```
   n! ≈ (n/e)ⁿ√(2πn)
@@ -239,7 +289,7 @@ T(n) = (n-1) \cdot T(n-1) + O(1)
 - **Grafos Aleatórios**:
   - Explora ~60% das permutações
 
-### # Melhor Caso (O(n))
+###  Melhor Caso (O(n))
 - **Condição Ideal**:
   - Primeira permutação válida
   - Grafo linear simples
@@ -267,7 +317,5 @@ T(n) = (n-1) \cdot T(n-1) + O(1)
 ---
 
 
-##  Ponto Extra: Diagrama Visual
 
-<img width="311" alt="image" src="https://github.com/user-attachments/assets/a62223a7-e26b-47a2-876e-41c90b9cc31b" />
 
